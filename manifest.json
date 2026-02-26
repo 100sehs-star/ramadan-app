@@ -1,7 +1,7 @@
 {
   "name": "بوابة رمضان 1447هـ",
   "short_name": "رمضان",
-  "start_url": "./index.html",
+ "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#020617",
