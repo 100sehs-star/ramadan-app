@@ -1,353 +1,152 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>بوابة رمضان 1447هـ</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<title>بوابة رمضان 1447هـ</title>
 
-  <style>
-    body{
-      background:#070b16;
-      color:#e5e7eb;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans Arabic", "Tahoma", sans-serif;
-    }
-    .bg-stars{
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.06) 0 2px, transparent 3px),
-        radial-gradient(circle at 70% 30%, rgba(255,255,255,.06) 0 2px, transparent 3px),
-        radial-gradient(circle at 40% 80%, rgba(255,255,255,.06) 0 2px, transparent 3px);
-      background-size: 90px 90px;
-    }
-    .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(10px);
-    }
-    .soft-divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-    }
-    .tab-active{
-      border-color: rgba(245,158,11,.9) !important;
-      color: rgb(245,158,11) !important;
-      box-shadow: 0 0 0 3px rgba(245,158,11,.12) inset;
-    }
-  </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
-<body class="min-h-screen bg-stars">
-  <main class="max-w-md mx-auto px-4 py-8">
+<body class="bg-slate-950 text-white min-h-screen p-4">
 
-    <!-- Header -->
-    <div class="text-center">
-      <div class="mx-auto w-20 h-20 rounded-full glass flex items-center justify-center">
-        <div class="text-5xl">🌙</div>
-      </div>
+<div class="max-w-xl mx-auto space-y-6">
 
-      <h1 class="mt-4 text-3xl font-extrabold text-amber-400">
-        بوابة رمضان 1447هـ
-      </h1>
+<h1 class="text-3xl font-bold text-yellow-400 text-center">
+بوابة رمضان 1447هـ
+</h1>
 
-      <div class="mt-3 flex items-center justify-center gap-2">
-        <span class="px-4 py-2 rounded-full glass text-slate-200">2026</span>
-        <span class="px-4 py-2 rounded-full glass text-slate-200">الخرطوم</span>
-      </div>
+<div class="text-center space-y-2">
+<div id="live-clock" class="text-3xl font-bold text-yellow-300"></div>
+<div id="live-date" class="text-slate-300"></div>
+<div id="hijri-date" class="text-slate-400"></div>
+</div>
 
-      <div class="mt-3 text-emerald-400 font-semibold">
-        نحن الآن في شهر الخير والبركة
-      </div>
+<div class="bg-slate-900 rounded-xl p-4 space-y-3">
 
-      <!-- Current time -->
-      <div class="mt-2 text-4xl font-extrabold text-amber-400" id="big-time">--:--:--</div>
+<h2 class="text-lg font-bold text-yellow-400">إمساكية اليوم (الخرطوم)</h2>
 
-      <!-- Hijri + Gregorian lines -->
-      <div class="mt-1 text-slate-300" id="hijri-line">—</div>
-      <div class="mt-1 text-slate-300" id="gregorian-date">—</div>
+<div class="flex justify-between">
+<span>الفجر (الإمساك)</span>
+<span id="fajr" class="text-yellow-300 font-bold">--</span>
+</div>
 
-      <!-- Tabs -->
-      <div class="mt-6 flex justify-between gap-2 text-lg">
-        <button class="flex-1 py-3 rounded-2xl glass border border-transparent text-slate-300" id="tab-doc">تهنئة</button>
-        <button class="flex-1 py-3 rounded-2xl glass border border-transparent text-slate-300" id="tab-mas">المسبحة</button>
-        <button class="flex-1 py-3 rounded-2xl glass border border-amber-500 text-amber-400 tab-active" id="tab-home">الرئيسية</button>
-      </div>
-      <div class="mt-3 soft-divider"></div>
-    </div>
+<div class="flex justify-between">
+<span>المغرب (الإفطار)</span>
+<span id="maghrib" class="text-green-400 font-bold">--</span>
+</div>
 
-    <!-- Card: Day number + first fast date -->
-    <section class="mt-6 p-5 rounded-3xl glass">
-      <div class="text-center text-slate-200 text-2xl mb-4">نحن اليوم في:</div>
+<div class="flex justify-between">
+<span>العشاء</span>
+<span id="isha" class="text-slate-200 font-bold">--</span>
+</div>
 
-      <div class="text-center text-7xl font-extrabold text-amber-400" id="ramadan-day">--</div>
+<hr class="border-slate-700">
 
-      <div class="mt-3 text-center text-slate-400">
-        من شهر رمضان المبارك 1447هـ
-      </div>
+<div class="flex justify-between text-yellow-300 font-bold">
+<span>باقي على الإفطار</span>
+<span id="iftar-countdown">--:--:--</span>
+</div>
 
-      <div class="mt-5 soft-divider"></div>
+<button onclick="loadTimings()" 
+class="w-full mt-4 bg-slate-800 py-2 rounded-lg">
+تحديث الإمساكية
+</button>
 
-      <div class="mt-4 text-slate-200">
-        أول يوم صيام (عدّله حسب إعلان بلدك):
-      </div>
-
-      <div class="mt-3 flex items-center gap-3">
-        <button id="save-first-fast"
-          class="w-24 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold">
-          حفظ
-        </button>
-
-        <div class="flex-1">
-          <input id="first-fast-date" type="date"
-                 class="w-full px-4 py-3 rounded-2xl bg-slate-900/40 border border-white/10 text-slate-100 outline-none" />
-          <div class="mt-2 text-xs text-slate-400" id="first-fast-hint">—</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Imsakiyah -->
-    <section class="mt-6 p-5 rounded-3xl glass">
-      <div class="flex items-center justify-between">
-        <div class="text-xl font-extrabold text-amber-400">إمساكية اليوم (الخرطوم)</div>
-        <div class="px-3 py-1 rounded-full glass text-slate-300 text-sm" id="auto-badge">مُحدّثة تلقائياً</div>
-      </div>
-
-      <div class="mt-4 space-y-3 text-lg">
-        <div class="flex justify-between items-center">
-          <span class="text-slate-300">وقت السحور (تقريبي)</span>
-          <span class="text-slate-100 font-bold" id="suhoor">--:--</span>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-slate-300">أذان الفجر (الإمساك)</span>
-          <span class="text-amber-300 font-bold" id="fajr">--:--</span>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-slate-300">أذان المغرب (الإفطار)</span>
-          <span class="text-emerald-300 font-bold" id="maghrib">--:--</span>
-        </div>
-
-        <div class="soft-divider my-2"></div>
-
-        <!-- Countdown row -->
-        <div class="flex justify-between items-center">
-          <span class="text-slate-300">باقي على الإفطار</span>
-          <span class="text-yellow-200 font-extrabold" id="iftar-countdown">--:--:--</span>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-slate-300">العشاء</span>
-          <span class="text-slate-100 font-bold" id="isha">--:--</span>
-        </div>
-      </div>
-
-      <button id="refresh-timings"
-        class="w-full mt-6 py-4 rounded-2xl glass border border-white/10 hover:border-white/20 text-slate-100 font-extrabold">
-        تحديث الإمساكية
-      </button>
-
-      <div class="mt-3 text-xs text-slate-400">
-        ملاحظة: السحور هنا محسوب كـ (الفجر - 20 دقيقة) بشكل تقريبي.
-      </div>
-    </section>
-
-  </main>
+</div>
+</div>
 
 <script>
-  // ---------- أدوات مساعدة ----------
-  function pad2(n){ return String(n).padStart(2,"0"); }
 
-  function formatHM(dateObj){
-    return pad2(dateObj.getHours()) + ":" + pad2(dateObj.getMinutes());
-  }
+let maghribTimeStr = null;
+let countdownTimer = null;
 
-  function parseHMToDateToday(hm){
-    // hm like "17:57"
-    var parts = hm.split(":");
-    var h = Number(parts[0]);
-    var m = Number(parts[1]);
-    var now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
-  }
+function updateClock(){
+  const now = new Date();
 
-  function subtractMinutesFromHM(hm, mins){
-    if(!hm || hm.indexOf(":") === -1) return "--:--";
-    var parts = hm.split(":");
-    var h = Number(parts[0]);
-    var m = Number(parts[1]);
-    if(Number.isNaN(h) || Number.isNaN(m)) return "--:--";
-    var d = new Date();
-    d.setHours(h, m, 0, 0);
-    d = new Date(d.getTime() - mins*60000);
-    return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-  }
+  document.getElementById("live-clock").textContent =
+    now.toLocaleTimeString("ar-SD");
 
-  // ---------- الوقت الحالي + التاريخ الميلادي ----------
-  function updateClock(){
-    var el = document.getElementById("big-time");
-    if(!el) return;
-    var now = new Date();
-    el.textContent = pad2(now.getHours()) + ":" + pad2(now.getMinutes()) + ":" + pad2(now.getSeconds());
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  function updateGregorianDate(){
-    var el = document.getElementById("gregorian-date");
-    if(!el) return;
-    var now = new Date();
-    el.textContent = now.toLocaleDateString("ar-SD", {
-      weekday:"long", year:"numeric", month:"long", day:"numeric"
+  document.getElementById("live-date").textContent =
+    now.toLocaleDateString("ar-SD", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
     });
-  }
-  updateGregorianDate();
-  setInterval(updateGregorianDate, 60000);
 
-  // ---------- حفظ/تحميل تاريخ أول يوم ----------
-  var firstFastInput = document.getElementById("first-fast-date");
-  var firstFastHint  = document.getElementById("first-fast-hint");
-  var saveBtn        = document.getElementById("save-first-fast");
+  document.getElementById("hijri-date").textContent =
+    now.toLocaleDateString("ar-SA-u-ca-islamic", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    }) + " هـ";
+}
 
-  function loadFirstFast(){
-    var saved = localStorage.getItem("firstFastDate");
-    if(saved){
-      firstFastInput.value = saved;
-      firstFastHint.textContent = "المحفوظ حالياً: " + saved;
-    }else{
-      // افتراضي (عدله إذا أردت)
-      firstFastInput.value = "2026-02-19";
-      firstFastHint.textContent = "الافتراضي مضبوط على 2026-02-19 (قابل للتغيير).";
-    }
-  }
-  loadFirstFast();
+setInterval(updateClock,1000);
+updateClock();
 
-  saveBtn.addEventListener("click", function(){
-    if(firstFastInput.value){
-      localStorage.setItem("firstFastDate", firstFastInput.value);
-      firstFastHint.textContent = "تم الحفظ: " + firstFastInput.value;
-      updateRamadanDay();
-      // بعد حفظ أول يوم، نخلي التحديث يعتمد على تاريخ اليوم الحالي
-      fetchTimingsForToday();
-    }
+
+function loadTimings(){
+  fetch("https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5")
+  .then(res=>res.json())
+  .then(data=>{
+    const t = data.data.timings;
+
+    document.getElementById("fajr").textContent = t.Fajr;
+    document.getElementById("maghrib").textContent = t.Maghrib;
+    document.getElementById("isha").textContent = t.Isha;
+
+    maghribTimeStr = t.Maghrib;
+    startCountdown();
   });
+}
 
-  function updateRamadanDay(){
-    var el = document.getElementById("ramadan-day");
-    if(!el) return;
+function startCountdown(){
 
-    var first = localStorage.getItem("firstFastDate") || firstFastInput.value || "2026-02-19";
-    var firstD = new Date(first + "T00:00:00");
-    var now = new Date();
-    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
+  if(countdownTimer) clearInterval(countdownTimer);
 
-    var diffDays = Math.floor((today - firstD) / 86400000) + 1;
-    if(diffDays < 1) diffDays = 1;
-    el.textContent = String(diffDays);
-  }
-  updateRamadanDay();
+  countdownTimer = setInterval(()=>{
 
-  // ---------- جلب مواقيت الصلاة (الخرطوم) ----------
-  var city = "Khartoum";
-  var country = "Sudan";
-  var method = 4;
+    if(!maghribTimeStr) return;
 
-  function getTodayDDMMYYYY(){
-    var d = new Date();
-    var dd = pad2(d.getDate());
-    var mm = pad2(d.getMonth()+1);
-    var yy = d.getFullYear();
-    return dd + "-" + mm + "-" + yy;
-  }
+    const now = new Date();
+    const [h,m] = maghribTimeStr.split(":").map(Number);
 
-  async function fetchTimings(dateDDMMYYYY){
-    // AlAdhan API (بدون مفتاح)
-    var url = "https://api.aladhan.com/v1/timingsByCity/" + dateDDMMYYYY +
-              "?city=" + encodeURIComponent(city) +
-              "&country=" + encodeURIComponent(country) +
-              "&method=" + method;
+    let target = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      h,m,0
+    );
 
-    var res = await fetch(url);
-    var json = await res.json();
-    if(!json || json.code !== 200) throw new Error("API error");
-
-    var t = json.data.timings;
-
-    // Remove timezone suffix like "17:57 (CAT)"
-    function cleanTime(x){
-      if(!x) return "--:--";
-      return x.split(" ")[0].trim();
+    if(target <= now){
+      target.setDate(target.getDate()+1);
     }
 
-    var Fajr = cleanTime(t.Fajr);
-    var Maghrib = cleanTime(t.Maghrib);
-    var Isha = cleanTime(t.Isha);
+    const diff = target - now;
 
-    document.getElementById("fajr").textContent = Fajr;
-    document.getElementById("maghrib").textContent = Maghrib;
-    document.getElementById("isha").textContent = Isha;
+    const hours = Math.floor(diff/(1000*60*60));
+    const minutes = Math.floor((diff%(1000*60*60))/(1000*60));
+    const seconds = Math.floor((diff%(1000*60))/1000);
 
-    // suhoor approx = fajr - 20 min
-    document.getElementById("suhoor").textContent = subtractMinutesFromHM(Fajr, 20);
+    document.getElementById("iftar-countdown").textContent =
+      String(hours).padStart(2,"0")+":"+
+      String(minutes).padStart(2,"0")+":"+
+      String(seconds).padStart(2,"0");
 
-    // Hijri line
-    var hijri = json.data.date.hijri;
-    var hijriLine = hijri.weekday.ar + "، " + hijri.day + " " + hijri.month.ar + " " + hijri.year;
-    document.getElementById("hijri-line").textContent = hijriLine;
-  }
+  },1000);
+}
 
-  async function fetchTimingsForToday(){
-    try{
-      await fetchTimings(getTodayDDMMYYYY());
-    }catch(e){
-      // لو النت/الـAPI تعطل، خليه ما يبوّظ الصفحة
-      document.getElementById("auto-badge").textContent = "تعذر التحديث (تحقق من الإنترنت)";
-    }
-  }
+loadTimings();
 
-  document.getElementById("refresh-timings").addEventListener("click", function(){
-    fetchTimingsForToday();
-  });
-
-  // ---------- عدّاد الإفطار ----------
-  function startIftarCountdown(){
-    var countdownEl = document.getElementById("iftar-countdown");
-    if(!countdownEl) return;
-
-    setInterval(function(){
-      var magEl = document.getElementById("maghrib");
-      var mag = magEl ? magEl.textContent.trim() : "";
-
-      if(!mag || mag === "--:--" || mag.indexOf(":") === -1){
-        countdownEl.textContent = "--:--:--";
-        return;
-      }
-
-      var parts = mag.split(":");
-      var h = Number(parts[0]);
-      var m = Number(parts[1]);
-      if(Number.isNaN(h) || Number.isNaN(m)){
-        countdownEl.textContent = "--:--:--";
-        return;
-      }
-
-      var now = new Date();
-      var target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
-      if(target <= now) target.setDate(target.getDate() + 1);
-
-      var diff = target - now;
-      var hh = Math.floor(diff / 3600000);
-      var mm = Math.floor((diff % 3600000) / 60000);
-      var ss = Math.floor((diff % 60000) / 1000);
-
-      countdownEl.textContent = pad2(hh) + ":" + pad2(mm) + ":" + pad2(ss);
-    }, 1000);
-  }
-  startIftarCountdown();
-
-  // ---------- تشغيل أولي ----------
-  fetchTimingsForToday();
 </script>
 
 </body>
