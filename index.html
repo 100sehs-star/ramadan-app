@@ -536,8 +536,38 @@
     }
     $("download-btn").addEventListener("click", downloadCard);
 
-    function init(){
-      updateTodayChip();}
+    function updateLiveClock() {
+  const now = new Date();
+
+  const time = now.toLocaleTimeString("ar-SD", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  const gregorianDate = now.toLocaleDateString("ar-SD", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const clockEl = document.getElementById("live-clock");
+  const dateEl  = document.getElementById("live-date");
+  const hijriEl = document.getElementById("hijri-date");
+
+  if (clockEl) clockEl.textContent = time;
+  if (dateEl)  dateEl.textContent  = gregorianDate;
+  if (hijriEl) hijriEl.textContent = hijriDate + " هـ";
+}
+
 function updateLiveClock() {
   const now = new Date();
 
@@ -547,14 +577,14 @@ function updateLiveClock() {
     second: "2-digit"
   });
 
-  const date = now.toLocaleDateString("ar-SD", {
+  const gregorianDate = now.toLocaleDateString("ar-SD", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric"
   });
 
-  const hijri = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+  const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -562,24 +592,44 @@ function updateLiveClock() {
   });
 
   const clockEl = document.getElementById("live-clock");
-  const dateEl = document.getElementById("live-date");
+  const dateEl  = document.getElementById("live-date");
   const hijriEl = document.getElementById("hijri-date");
 
   if (clockEl) clockEl.textContent = time;
-  if (dateEl) dateEl.textContent = date;
-  if (hijriEl) hijriEl.textContent = hijri + " هـ";
+  if (dateEl)  dateEl.textContent  = gregorianDate;
+  if (hijriEl) hijriEl.textContent = hijriDate + " هـ";
 }
 
-function updateLiveClock() {
-    const now = new Date();
+function init(){
+  updateTodayChip();
 
-    const time = now.toLocaleTimeString("ar-SD", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-    });
+  if(!store.get("ramadan_day1")) store.set("ramadan_day1", DEFAULT_DAY1);
+  calculateRamadanDay();
+  setInterval(calculateRamadanDay, 60*1000);
 
-    const gregorianDate = now.toLocaleDateString("ar-SD");
+  fetchTimings();
+  renderTasbeeh();
+
+  const savedName = store.get("card_name", "");
+  $("sender-name").value = savedName;
+  updateCard();
+
+  const savedTheme = store.get("card_theme", themes[0]);
+  $("greeting-box").style.background = savedTheme;
+
+  const lastTab = store.get("last_tab", "home");
+  switchTab(tabs.includes(lastTab) ? lastTab : "home");
+
+  // ✅ شغل الساعة هنا بعد ما الصفحة تحمل
+  updateLiveClock();
+  setInterval(updateLiveClock, 1000);
+}
+
+tabs.forEach(id=>{
+  $("tab-"+id).addEventListener("click", ()=> store.set("last_tab", id));
+});
+
+window.addEventListener("load", init); init);caleDateString("ar-SD");
 
     const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
         weekday: "long",
