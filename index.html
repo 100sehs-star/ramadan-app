@@ -1,152 +1,180 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>بوابة رمضان 1447هـ</title>
+  <title>بوابة رمضان 1447هـ</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020617">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#020617">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
-<script src="https://cdn.tailwindcss.com"></script>
-
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-slate-950 text-white min-h-screen p-4">
+  <div class="max-w-xl mx-auto space-y-6">
 
-<div class="max-w-xl mx-auto space-y-6">
+    <h1 class="text-3xl font-bold text-yellow-400 text-center">
+      بوابة رمضان 1447هـ
+    </h1>
 
-<h1 class="text-3xl font-bold text-yellow-400 text-center">
-بوابة رمضان 1447هـ
-</h1>
+    <div class="text-center space-y-2">
+      <div id="live-clock" class="text-3xl font-bold text-yellow-300"></div>
+      <div id="live-date" class="text-slate-300"></div>
+      <div id="hijri-date" class="text-slate-400"></div>
+    </div>
 
-<div class="text-center space-y-2">
-<div id="live-clock" class="text-3xl font-bold text-yellow-300"></div>
-<div id="live-date" class="text-slate-300"></div>
-<div id="hijri-date" class="text-slate-400"></div>
-</div>
+    <div class="bg-slate-900 rounded-xl p-4 space-y-3">
 
-<div class="bg-slate-900 rounded-xl p-4 space-y-3">
+      <h2 class="text-lg font-bold text-yellow-400">إمساكية اليوم (الخرطوم)</h2>
 
-<h2 class="text-lg font-bold text-yellow-400">إمساكية اليوم (الخرطوم)</h2>
+      <div class="flex justify-between">
+        <span>الفجر (الإمساك)</span>
+        <span id="fajr" class="text-yellow-300 font-bold">--</span>
+      </div>
 
-<div class="flex justify-between">
-<span>الفجر (الإمساك)</span>
-<span id="fajr" class="text-yellow-300 font-bold">--</span>
-</div>
+      <div class="flex justify-between">
+        <span>المغرب (الإفطار)</span>
+        <span id="maghrib" class="text-green-400 font-bold">--</span>
+      </div>
 
-<div class="flex justify-between">
-<span>المغرب (الإفطار)</span>
-<span id="maghrib" class="text-green-400 font-bold">--</span>
-</div>
+      <div class="flex justify-between">
+        <span>العشاء</span>
+        <span id="isha" class="text-slate-200 font-bold">--</span>
+      </div>
 
-<div class="flex justify-between">
-<span>العشاء</span>
-<span id="isha" class="text-slate-200 font-bold">--</span>
-</div>
+      <hr class="border-slate-700">
 
-<hr class="border-slate-700">
+      <div class="flex justify-between text-yellow-300 font-bold">
+        <span>باقي على الإفطار</span>
+        <span id="iftar-countdown">--:--:--</span>
+      </div>
 
-<div class="flex justify-between text-yellow-300 font-bold">
-<span>باقي على الإفطار</span>
-<span id="iftar-countdown">--:--:--</span>
-</div>
+      <div id="status" class="text-sm text-slate-400"></div>
 
-<button onclick="loadTimings()" 
-class="w-full mt-4 bg-slate-800 py-2 rounded-lg">
-تحديث الإمساكية
-</button>
+      <button id="refresh-btn"
+        class="w-full mt-4 bg-slate-800 py-2 rounded-lg hover:bg-slate-700 transition">
+        تحديث الإمساكية
+      </button>
 
-</div>
-</div>
+    </div>
+  </div>
 
 <script>
+  let maghribTimeStr = null;
+  let countdownTimer = null;
 
-let maghribTimeStr = null;
-let countdownTimer = null;
+  function pad2(n){ return String(n).padStart(2, "0"); }
 
-function updateClock(){
-  const now = new Date();
-
-  document.getElementById("live-clock").textContent =
-    now.toLocaleTimeString("ar-SD");
-
-  document.getElementById("live-date").textContent =
-    now.toLocaleDateString("ar-SD", {
-      weekday:"long",
-      year:"numeric",
-      month:"long",
-      day:"numeric"
-    });
-
-  document.getElementById("hijri-date").textContent =
-    now.toLocaleDateString("ar-SA-u-ca-islamic", {
-      weekday:"long",
-      year:"numeric",
-      month:"long",
-      day:"numeric"
-    }) + " هـ";
-}
-
-setInterval(updateClock,1000);
-updateClock();
-
-
-function loadTimings(){
-  fetch("https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5")
-  .then(res=>res.json())
-  .then(data=>{
-    const t = data.data.timings;
-
-    document.getElementById("fajr").textContent = t.Fajr;
-    document.getElementById("maghrib").textContent = t.Maghrib;
-    document.getElementById("isha").textContent = t.Isha;
-
-    maghribTimeStr = t.Maghrib;
-    startCountdown();
-  });
-}
-
-function startCountdown(){
-
-  if(countdownTimer) clearInterval(countdownTimer);
-
-  countdownTimer = setInterval(()=>{
-
-    if(!maghribTimeStr) return;
-
+  function updateClock(){
     const now = new Date();
-    const [h,m] = maghribTimeStr.split(":").map(Number);
 
-    let target = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      h,m,0
-    );
+    // الوقت
+    document.getElementById("live-clock").textContent =
+      now.toLocaleTimeString("ar-SD", { hour: "numeric", minute: "2-digit", second: "2-digit" });
 
-    if(target <= now){
-      target.setDate(target.getDate()+1);
+    // التاريخ الميلادي
+    const gregFmt = new Intl.DateTimeFormat("ar-SD", {
+      weekday:"long", year:"numeric", month:"long", day:"numeric"
+    });
+    document.getElementById("live-date").textContent = gregFmt.format(now);
+
+    // التاريخ الهجري
+    try {
+      const hijriFmt = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+        weekday:"long", year:"numeric", month:"long", day:"numeric"
+      });
+      document.getElementById("hijri-date").textContent = hijriFmt.format(now) + " هـ";
+    } catch(e){
+      // fallback بسيط لو جهاز ما يدعم
+      document.getElementById("hijri-date").textContent = "التاريخ الهجري غير مدعوم على هذا الجهاز";
     }
+  }
 
-    const diff = target - now;
+  setInterval(updateClock, 1000);
+  updateClock();
 
-    const hours = Math.floor(diff/(1000*60*60));
-    const minutes = Math.floor((diff%(1000*60*60))/(1000*60));
-    const seconds = Math.floor((diff%(1000*60))/1000);
+  function setStatus(msg){
+    document.getElementById("status").textContent = msg || "";
+  }
 
-    document.getElementById("iftar-countdown").textContent =
-      String(hours).padStart(2,"0")+":"+
-      String(minutes).padStart(2,"0")+":"+
-      String(seconds).padStart(2,"0");
+  function cleanTime(t){
+    // أحياناً يرجع "17:57 (EET)" أو "17:57"
+    // ناخد أول جزء قبل أي مسافة
+    return String(t || "").trim().split(" ")[0];
+  }
 
-  },1000);
-}
+  async function loadTimings(){
+    try {
+      setStatus("جاري تحديث الإمساكية...");
+      const url = "https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5";
+      const res = await fetch(url, { cache: "no-store" });
+      const data = await res.json();
 
-loadTimings();
+      const t = data?.data?.timings;
+      if(!t) throw new Error("لم يتم استلام بيانات صحيحة");
 
+      const fajr = cleanTime(t.Fajr);
+      const maghrib = cleanTime(t.Maghrib);
+      const isha = cleanTime(t.Isha);
+
+      document.getElementById("fajr").textContent = fajr || "--";
+      document.getElementById("maghrib").textContent = maghrib || "--";
+      document.getElementById("isha").textContent = isha || "--";
+
+      maghribTimeStr = maghrib;
+      startCountdown();
+
+      setStatus("تم التحديث بنجاح ✅");
+    } catch (err){
+      console.error(err);
+      setStatus("تعذر جلب الإمساكية الآن (تحقق من الإنترنت).");
+      // لا نوقف الموقع
+    }
+  }
+
+  function startCountdown(){
+    if(countdownTimer) clearInterval(countdownTimer);
+
+    countdownTimer = setInterval(() => {
+      if(!maghribTimeStr) return;
+
+      const now = new Date();
+      const parts = maghribTimeStr.split(":").map(Number);
+      const h = parts[0], m = parts[1];
+
+      if(Number.isNaN(h) || Number.isNaN(m)) return;
+
+      let target = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        h, m, 0
+      );
+
+      // لو وقت المغرب عدى اليوم، نحسب لبكرة
+      if(target <= now){
+        target.setDate(target.getDate() + 1);
+      }
+
+      const diff = target - now;
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("iftar-countdown").textContent =
+        pad2(hours) + ":" + pad2(minutes) + ":" + pad2(seconds);
+
+    }, 1000);
+  }
+
+  document.getElementById("refresh-btn").addEventListener("click", loadTimings);
+
+  // تشغيل تلقائي عند فتح الصفحة
+  loadTimings();
 </script>
 
 </body>
