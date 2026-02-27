@@ -1438,20 +1438,7 @@ window.addEventListener("load", init);$("tab-"+id).addEventListener("click", ()=
         } catch (e) {}
       });
     }
-function init(){
-  updateTodayChip();
-  calculateRamadanDay();
-  fetchTimings();
-  renderTasbeeh();
 
-  // تشغيل الساعة والتاريخ (لو عندك دوالهم لاحقاً)
-  if (typeof updateLiveClock === "function") {
-    updateLiveClock();
-    setInterval(updateLiveClock, 1000);
-  }
-}
-
-window.addEventListener("load", init);
   </script>
 </body>
 </html>
