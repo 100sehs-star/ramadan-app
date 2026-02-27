@@ -565,29 +565,28 @@
     $("download-btn").addEventListener("click", downloadCard);
 
     // Live clock + Gregorian + Hijri
-    function updateLiveClock(){
-      const now = new Date();
+    function function updateLiveClock(){
+  const now = new Date();
 
-      const time = now.toLocaleTimeString("ar-SD", {
-        hour: "2-digit", minute: "2-digit", second: "2-digit"
-      });
+  const time = now.toLocaleTimeString("ar-SD", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
 
-      const gregorianDate = now.toLocaleDateString("ar-SD", {
-        weekday: "long", year: "numeric", month: "long", day: "numeric"
-      });
+  const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 
-      const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
-        weekday: "long", year: "numeric", month: "long", day: "numeric"
-      });
+  const clockEl = document.getElementById("live-clock");
+  const hijriEl = document.getElementById("hijri-date");
 
-      const clockEl = $("live-clock");
-      const dateEl  = $("live-date");
-      const hijriEl = $("hijri-date");
-
-      if(clockEl) clockEl.textContent = time;
-      if(dateEl)  dateEl.textContent  = gregorianDate;
-      if(hijriEl) hijriEl.textContent = hijriDate + " هـ";
-    }
+  if (clockEl) clockEl.textContent = time;
+  if (hijriEl) hijriEl.textContent = hijriDate + " هـ";
+}
 
     // Init
     function init(){
