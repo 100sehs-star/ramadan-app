@@ -603,6 +603,7 @@ function updateLiveClock() {
 function init(){
   updateTodayChip();
 
+setInterval(updateLiveClock, 1000);
   if(!store.get("ramadan_day1")) store.set("ramadan_day1", DEFAULT_DAY1);
   calculateRamadanDay();
   setInterval(calculateRamadanDay, 60*1000);
