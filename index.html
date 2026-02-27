@@ -706,6 +706,20 @@ setInterval(updateLiveClock, 1000);
         } catch (e) {}
       });
     }
+function init(){
+  updateTodayChip();
+  calculateRamadanDay();
+  fetchTimings();
+  renderTasbeeh();
+
+  // تشغيل الساعة والتاريخ (لو عندك دوالهم لاحقاً)
+  if (typeof updateLiveClock === "function") {
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+  }
+}
+
+window.addEventListener("load", init);
   </script>
 </body>
 </html>
