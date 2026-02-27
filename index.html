@@ -35,11 +35,9 @@
       margin:0;
       overflow-x:hidden;
     }
-
     .islamic-bg{
       background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fbbf24' fill-opacity='0.07'%3E%3Cpath d='M40 4l4 16 16 4-16 4-4 16-4-16-16-4 16-4z'/%3E%3Cpath d='M12 40l3 12 12 3-12 3-3 12-3-12-12-3 12-3z'/%3E%3Cpath d='M68 40l3 12 12 3-12 3-3 12-3-12-12-3 12-3z'/%3E%3C/g%3E%3C/svg%3E");
     }
-
     .glass-card{
       background: linear-gradient(180deg, var(--glass), var(--glass2));
       backdrop-filter: blur(12px);
@@ -47,31 +45,16 @@
       border-radius: 1.5rem;
       box-shadow: 0 30px 60px rgba(0,0,0,.35);
     }
-
     .moon-glow{ filter: drop-shadow(0 0 18px rgba(251,191,36,.55)); }
-
-    .active-tab{
-      color: var(--gold);
-      border-bottom: 3px solid var(--gold);
-    }
-
+    .active-tab{ color: var(--gold); border-bottom: 3px solid var(--gold); }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
     .pulse-light{ animation:pulse 2s infinite; }
-
     @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .floaty{ animation: floaty 4s ease-in-out infinite; }
-
-    .chip{
-      background: rgba(148,163,184,.12);
-      border: 1px solid rgba(148,163,184,.18);
-      border-radius: 999px;
-    }
-
+    .chip{ background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.18); border-radius: 999px; }
     .soft-divider{ border-top: 1px dashed rgba(251,191,36,.22); }
-
     .fade-in{ animation: fade .25s ease-out; }
     @keyframes fade{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform: translateY(0);} }
-
     :focus-visible{ outline: 3px solid rgba(251,191,36,.45); outline-offset: 3px; border-radius: 10px; }
   </style>
 </head>
@@ -90,18 +73,16 @@
         بوابة رمضان 1447هـ
       </h1>
 
-      <!-- التاريخ الميلادي هنا فقط (جنب المدينة) -->
+      <!-- ✅ الخيار A: لا نعرض تاريخ هنا عشان ما يتكرر -->
       <div class="flex flex-wrap gap-2 justify-center items-center text-[12px] text-slate-300">
         <span class="chip px-3 py-1">2026</span>
         <span class="chip px-3 py-1" id="city-chip">الخرطوم</span>
-        <span class="chip px-3 py-1" id="today-chip">—</span>
       </div>
 
       <p id="ramadan-status" class="mt-3 text-sm text-emerald-400 font-bold pulse-light">
         جاري الحساب...
       </p>
 
-      <!-- الساعة + الهجري فقط (بدون ميلادي لتفادي التكرار) -->
       <div class="mt-4 text-center">
         <div id="live-clock" class="text-2xl font-bold text-yellow-400"></div>
         <div id="hijri-date" class="text-xs text-slate-400 mt-1"></div>
@@ -135,8 +116,7 @@
           <label class="block text-slate-300 text-sm mb-2">أول يوم صيام (عدّله حسب إعلان بلدك):</label>
           <div class="flex gap-2">
             <input id="ramadan-day1" type="date"
-              class="w-full bg-slate-950/40 border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-yellow-500 transition-all"
-            />
+              class="w-full bg-slate-950/40 border border-slate-700 rounded-xl p-3 text-white outline-none focus:ring-2 focus:ring-yellow-500 transition-all" />
             <button id="save-ramadan" class="px-4 py-3 bg-yellow-600 hover:bg-yellow-500 rounded-xl font-bold transition-all">
               حفظ
             </button>
@@ -198,17 +178,11 @@
         </button>
 
         <div class="flex gap-3">
-          <button id="reset-btn" class="px-4 py-2 bg-red-900/30 text-red-300 rounded-xl text-sm border border-red-900/50">
-            تصفير
-          </button>
-          <button id="save-btn" class="px-4 py-2 bg-emerald-900/25 text-emerald-200 rounded-xl text-sm border border-emerald-900/40">
-            حفظ
-          </button>
+          <button id="reset-btn" class="px-4 py-2 bg-red-900/30 text-red-300 rounded-xl text-sm border border-red-900/50">تصفير</button>
+          <button id="save-btn" class="px-4 py-2 bg-emerald-900/25 text-emerald-200 rounded-xl text-sm border border-emerald-900/40">حفظ</button>
         </div>
 
-        <p class="text-slate-500 text-[11px] mt-4">
-          يتم حفظ العداد تلقائيًا على جهازك.
-        </p>
+        <p class="text-slate-500 text-[11px] mt-4">يتم حفظ العداد تلقائيًا على جهازك.</p>
       </div>
 
       <div class="grid grid-cols-2 gap-2 text-sm">
@@ -239,17 +213,11 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2 mt-4">
-          <button id="theme-btn" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all">
-            تغيير لون البطاقة
-          </button>
-          <button id="download-btn" class="bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700 text-white font-bold py-3 rounded-xl transition-all">
-            تحميل البطاقة
-          </button>
+          <button id="theme-btn" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all">تغيير لون البطاقة</button>
+          <button id="download-btn" class="bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700 text-white font-bold py-3 rounded-xl transition-all">تحميل البطاقة</button>
         </div>
 
-        <p class="text-center text-slate-500 text-xs mt-4">
-          تقدر تعمل Screenshot… أو اضغط “تحميل البطاقة” كصورة.
-        </p>
+        <p class="text-center text-slate-500 text-xs mt-4">تقدر تعمل Screenshot… أو اضغط “تحميل البطاقة” كصورة.</p>
       </div>
     </section>
 
@@ -318,15 +286,6 @@
         }
       });
     });
-
-    // Today chip (ميلادي مرة واحدة هنا)
-    function updateTodayChip(){
-      const d = new Date();
-      const fmt = new Intl.DateTimeFormat("ar-SD", {
-        weekday:"long", year:"numeric", month:"long", day:"numeric"
-      });
-      $("today-chip").textContent = fmt.format(d);
-    }
 
     // Ramadan day calc
     const DEFAULT_DAY1 = "2026-02-19";
@@ -416,8 +375,7 @@
         const t = data?.data?.timings;
         if(!t) throw new Error("Bad data");
 
-        const timings = { fajr: t.Fajr, maghrib: t.Maghrib, isha: t.Isha };
-        setTimingsUI(timings);
+        setTimingsUI({ fajr: t.Fajr, maghrib: t.Maghrib, isha: t.Isha });
         $("timings-badge").textContent = "مُحدّثة تلقائيًا";
       } catch {
         setTimingsUI(fallback);
@@ -468,7 +426,7 @@
       btn.addEventListener("click", ()=> changeZikr(btn.dataset.zikr));
     });
 
-    // Card themes + card
+    // Card
     const themes = [
       "linear-gradient(135deg, #064e3b, #022c22)",
       "linear-gradient(135deg, #1e3a8a, #172554)",
@@ -561,7 +519,7 @@
 
     $("download-btn").addEventListener("click", downloadCard);
 
-    // ✅ الساعة + الهجري فقط (بدون ميلادي)
+    // ✅ Live clock + Hijri (مصحح)
     function updateLiveClock(){
       const now = new Date();
 
@@ -587,9 +545,8 @@
 
     // Init
     function init(){
-      updateTodayChip();
-
       if(!store.get("ramadan_day1")) store.set("ramadan_day1", DEFAULT_DAY1);
+
       calculateRamadanDay();
       setInterval(calculateRamadanDay, 60*1000);
 
