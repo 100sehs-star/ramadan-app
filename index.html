@@ -148,7 +148,15 @@
           </div>
 
           <div class="soft-divider my-2"></div>
+<span class="text-emerald-400 font-bold" id="maghrib">—</span>
+</div>
 
+<div class="soft-divider my-2"></div>
+<div class="flex justify-between items-center">
+  <span class="text-slate-300">باقي على الإفطار</span>
+  <span class="text-yellow-200 font-bold" id="iftar-countdown">—</span>
+</div>
+<div class="soft-divider my-2"></div>
           <div class="flex justify-between items-center">
             <span class="text-slate-300">العشاء</span>
             <span class="text-slate-100 font-bold" id="isha">—</span>
@@ -573,7 +581,40 @@
   <!-- Register Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async () => {
+     // Iftar Countdown
+function updateIftarCountdown() {
+  const maghribText = document.getElementById("maghrib")?.textContent;
+  const countdownEl = document.getElementById("iftar-countdown");
+
+  if (!maghribText || maghribText === "—") {
+    if (countdownEl) countdownEl.textContent = "--";
+    return;
+  }
+
+  const now = new Date();
+  const [hh, mm] = maghribText.slice(0,5).split(":").map(Number);
+
+  const maghribTime = new Date();
+  maghribTime.setHours(hh, mm, 0, 0);
+
+  let diff = maghribTime - now;
+
+  if (diff <= 0) {
+    countdownEl.textContent = "حان الإفطار 🌙";
+    return;
+  }
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const countdownEl = document.getElementById("iftar-countdown");
+
+const hours = Math.floor(diff / (1000 * 60 * 60));
+const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+countdownEl.textContent =
+  String(hours).padStart(2, "0") + ":" +
+  String(minutes).padStart(2, "0") + ":" +
+  String(seconds).padStart(2, "0"); window.addEventListener("load", async () => {
         try {
           await navigator.serviceWorker.register("./sw.js");
         } catch (e) {}
