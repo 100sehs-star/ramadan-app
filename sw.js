@@ -1,4 +1,4 @@
-const CACHE_VERSION = "ramadan-pwa-v4"; // غيّر الرقم كل مرة لو احتجت
+const CACHE_VERSION = "ramadan-pwa-v5"; // غيّر الرقم كل مرة لو احتجت
 const CACHE_NAME = CACHE_VERSION;
 
 const ASSETS = [
