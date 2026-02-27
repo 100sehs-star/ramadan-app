@@ -193,6 +193,90 @@
   // تحميل أول مرة
   loadTimings();
 </script>
+<script>
+let maghribTimeStr = null;
+let countdownTimer = null;
 
+function updateClock(){
+  const now = new Date();
+
+  const clockEl = document.getElementById("live-clock");
+  if(clockEl) clockEl.textContent = now.toLocaleTimeString("ar-SD");
+
+  const dateEl = document.getElementById("live-date");
+  if(dateEl) dateEl.textContent = now.toLocaleDateString("ar-SD", {
+    weekday:"long", year:"numeric", month:"long", day:"numeric"
+  });
+
+  const hijriEl = document.getElementById("hijri-date");
+  if(hijriEl) hijriEl.textContent = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+    weekday:"long", year:"numeric", month:"long", day:"numeric"
+  }) + " هـ";
+}
+
+function loadTimings(){
+  fetch("https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5")
+    .then(res => res.json())
+    .then(data => {
+      const t = data.data.timings;
+
+      const fajrEl = document.getElementById("fajr");
+      if(fajrEl) fajrEl.textContent = t.Fajr;
+
+      const maghribEl = document.getElementById("maghrib");
+      if(maghribEl) maghribEl.textContent = t.Maghrib;
+
+      const ishaEl = document.getElementById("isha");
+      if(ishaEl) ishaEl.textContent = t.Isha;
+
+      maghribTimeStr = t.Maghrib;
+      startCountdown();
+    })
+    .catch(() => {
+      const cd = document.getElementById("iftar-countdown");
+      if(cd) cd.textContent = "--:--:--";
+    });
+}
+
+function startCountdown(){
+  if(countdownTimer) clearInterval(countdownTimer);
+
+  countdownTimer = setInterval(() => {
+    if(!maghribTimeStr) return;
+
+    const now = new Date();
+    const parts = maghribTimeStr.split(":").map(Number);
+    const h = parts[0], m = parts[1];
+
+    let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+
+    // لو المغرب عدى اليوم → عداد لبكرة
+    if(target <= now) target.setDate(target.getDate() + 1);
+
+    const diff = target - now;
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const cd = document.getElementById("iftar-countdown");
+    if(cd) cd.textContent =
+      String(hours).padStart(2,"0") + ":" +
+      String(minutes).padStart(2,"0") + ":" +
+      String(seconds).padStart(2,"0");
+  }, 1000);
+}
+
+// ربط زر التحديث لو عندك id=refresh-timings
+window.addEventListener("load", () => {
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  const btn = document.getElementById("refresh-timings");
+  if(btn) btn.addEventListener("click", loadTimings);
+
+  loadTimings();
+});
+</script>
 </body>
 </html>
