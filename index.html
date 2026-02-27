@@ -537,7 +537,31 @@
 
     function init(){
       updateTodayChip();
+function updateLiveClock(){
+  const now = new Date();
 
+  const time = now.toLocaleTimeString("ar-SD", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  const date = now.toLocaleDateString("ar-SD", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const clockEl = document.getElementById("live-clock");
+  const dateEl = document.getElementById("live-date");
+
+  if (clockEl) clockEl.textContent = time;
+  if (dateEl) dateEl.textContent = date;
+}
+
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
       if(!store.get("ramadan_day1")) store.set("ramadan_day1", DEFAULT_DAY1);
       calculateRamadanDay();
       setInterval(calculateRamadanDay, 60*1000);
