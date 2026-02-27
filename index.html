@@ -1,179 +1,196 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة رمضان 1447هـ</title>
 
-  <title>بوابة رمضان 1447هـ</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
+<link rel="apple-touch-icon" href="icon-192.png">
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#020617">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
-  <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-slate-950 text-white min-h-screen p-4">
-  <div class="max-w-xl mx-auto space-y-6">
 
-    <h1 class="text-3xl font-bold text-yellow-400 text-center">
-      بوابة رمضان 1447هـ
-    </h1>
+<div class="max-w-xl mx-auto space-y-6">
 
-    <div class="text-center space-y-2">
-      <div id="live-clock" class="text-3xl font-bold text-yellow-300"></div>
-      <div id="live-date" class="text-slate-300"></div>
-      <div id="hijri-date" class="text-slate-400"></div>
-    </div>
+  <h1 class="text-3xl font-bold text-yellow-400 text-center">
+    بوابة رمضان 1447هـ
+  </h1>
 
-    <div class="bg-slate-900 rounded-xl p-4 space-y-3">
-
-      <h2 class="text-lg font-bold text-yellow-400">إمساكية اليوم (الخرطوم)</h2>
-
-      <div class="flex justify-between">
-        <span>الفجر (الإمساك)</span>
-        <span id="fajr" class="text-yellow-300 font-bold">--</span>
-      </div>
-
-      <div class="flex justify-between">
-        <span>المغرب (الإفطار)</span>
-        <span id="maghrib" class="text-green-400 font-bold">--</span>
-      </div>
-
-      <div class="flex justify-between">
-        <span>العشاء</span>
-        <span id="isha" class="text-slate-200 font-bold">--</span>
-      </div>
-
-      <hr class="border-slate-700">
-
-      <div class="flex justify-between text-yellow-300 font-bold">
-        <span>باقي على الإفطار</span>
-        <span id="iftar-countdown">--:--:--</span>
-      </div>
-
-      <div id="status" class="text-sm text-slate-400"></div>
-
-      <button id="refresh-btn"
-        class="w-full mt-4 bg-slate-800 py-2 rounded-lg hover:bg-slate-700 transition">
-        تحديث الإمساكية
-      </button>
-
-    </div>
+  <div class="text-center space-y-2">
+    <div id="live-clock" class="text-3xl font-bold text-yellow-300"></div>
+    <div id="live-date" class="text-slate-300"></div>
+    <div id="hijri-date" class="text-slate-400"></div>
   </div>
 
+  <div class="bg-slate-900 rounded-xl p-4 space-y-3">
+
+    <h2 class="text-lg font-bold text-yellow-400">إمساكية اليوم (الخرطوم)</h2>
+
+    <div class="flex justify-between">
+      <span>الفجر (الإمساك)</span>
+      <span id="fajr" class="text-yellow-300 font-bold">--</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span>المغرب (الإفطار)</span>
+      <span id="maghrib" class="text-green-400 font-bold">--</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span>العشاء</span>
+      <span id="isha" class="text-slate-200 font-bold">--</span>
+    </div>
+
+    <hr class="border-slate-700">
+
+    <div class="flex justify-between text-yellow-300 font-bold">
+      <span>باقي على الإفطار</span>
+      <span id="iftar-countdown">--:--:--</span>
+    </div>
+
+    <button id="refresh-btn"
+      class="w-full mt-4 bg-slate-800 py-2 rounded-lg">
+      تحديث الإمساكية
+    </button>
+
+    <div id="status" class="text-center text-slate-400 text-sm mt-2"></div>
+
+  </div>
+</div>
+
 <script>
-  let maghribTimeStr = null;
-  let countdownTimer = null;
+  // ====== أدوات مساعدة ======
+  const $ = (id) => document.getElementById(id);
 
-  function pad2(n){ return String(n).padStart(2, "0"); }
+  function cleanTime(val){
+    // يعالج: "17:57" أو "17:57 (CAT)"
+    return String(val || "").split(" ")[0].trim();
+  }
 
+  function pad2(n){ return String(n).padStart(2,"0"); }
+
+  // ====== الساعة + التاريخ ======
   function updateClock(){
     const now = new Date();
 
-    // الوقت
-    document.getElementById("live-clock").textContent =
-      now.toLocaleTimeString("ar-SD", { hour: "numeric", minute: "2-digit", second: "2-digit" });
-
-    // التاريخ الميلادي
-    const gregFmt = new Intl.DateTimeFormat("ar-SD", {
-      weekday:"long", year:"numeric", month:"long", day:"numeric"
+    $("live-clock").textContent = now.toLocaleTimeString("ar-SD", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
     });
-    document.getElementById("live-date").textContent = gregFmt.format(now);
 
-    // التاريخ الهجري
-    try {
-      const hijriFmt = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
-        weekday:"long", year:"numeric", month:"long", day:"numeric"
-      });
-      document.getElementById("hijri-date").textContent = hijriFmt.format(now) + " هـ";
-    } catch(e){
-      // fallback بسيط لو جهاز ما يدعم
-      document.getElementById("hijri-date").textContent = "التاريخ الهجري غير مدعوم على هذا الجهاز";
-    }
+    $("live-date").textContent = now.toLocaleDateString("ar-SD", {
+      weekday:"long",
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    });
+
+    $("hijri-date").textContent =
+      now.toLocaleDateString("ar-SA-u-ca-islamic", {
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      }) + " هـ";
   }
 
   setInterval(updateClock, 1000);
   updateClock();
 
-  function setStatus(msg){
-    document.getElementById("status").textContent = msg || "";
-  }
-
-  function cleanTime(t){
-    // أحياناً يرجع "17:57 (EET)" أو "17:57"
-    // ناخد أول جزء قبل أي مسافة
-    return String(t || "").trim().split(" ")[0];
-  }
+  // ====== الإمساكية + العداد ======
+  let maghribTimeStr = null;
+  let countdownTimer = null;
 
   async function loadTimings(){
-    try {
-      setStatus("جاري تحديث الإمساكية...");
-      const url = "https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5";
-      const res = await fetch(url, { cache: "no-store" });
+    try{
+      $("status").textContent = "جاري التحديث...";
+      const res = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Khartoum&country=Sudan&method=5");
       const data = await res.json();
 
       const t = data?.data?.timings;
-      if(!t) throw new Error("لم يتم استلام بيانات صحيحة");
+      if(!t) throw new Error("No timings");
 
-      const fajr = cleanTime(t.Fajr);
+      const fajr    = cleanTime(t.Fajr);
       const maghrib = cleanTime(t.Maghrib);
-      const isha = cleanTime(t.Isha);
+      const isha    = cleanTime(t.Isha);
 
-      document.getElementById("fajr").textContent = fajr || "--";
-      document.getElementById("maghrib").textContent = maghrib || "--";
-      document.getElementById("isha").textContent = isha || "--";
+      $("fajr").textContent = fajr || "--";
+      $("maghrib").textContent = maghrib || "--";
+      $("isha").textContent = isha || "--";
 
       maghribTimeStr = maghrib;
       startCountdown();
 
-      setStatus("تم التحديث بنجاح ✅");
-    } catch (err){
-      console.error(err);
-      setStatus("تعذر جلب الإمساكية الآن (تحقق من الإنترنت).");
-      // لا نوقف الموقع
+      $("status").textContent = "تم التحديث ✅";
+    }catch(e){
+      console.error(e);
+      $("status").textContent = "تعذر التحديث.. تحقق من الإنترنت ثم أعد المحاولة.";
     }
   }
 
   function startCountdown(){
     if(countdownTimer) clearInterval(countdownTimer);
 
-    countdownTimer = setInterval(() => {
-      if(!maghribTimeStr) return;
+    countdownTimer = setInterval(async () => {
+      if(!maghribTimeStr){
+        $("iftar-countdown").textContent = "--:--:--";
+        return;
+      }
 
       const now = new Date();
-      const parts = maghribTimeStr.split(":").map(Number);
-      const h = parts[0], m = parts[1];
+      const parts = maghribTimeStr.split(":");
+      if(parts.length < 2){
+        $("iftar-countdown").textContent = "--:--:--";
+        return;
+      }
 
-      if(Number.isNaN(h) || Number.isNaN(m)) return;
+      const h = Number(parts[0]);
+      const m = Number(parts[1]);
 
-      let target = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        h, m, 0
-      );
+      let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
 
-      // لو وقت المغرب عدى اليوم، نحسب لبكرة
+      // لو المغرب عدى: أعد جلب إمساكية اليوم الجديد بدل ما نعتمد على مغرب أمس
       if(target <= now){
-        target.setDate(target.getDate() + 1);
+        // جرّب تحديث الإمساكية مرة واحدة بعد العبور
+        // (علشان مغرب بكرة ممكن يختلف بدقيقة)
+        await loadTimings();
+        // بعد التحديث نعيد بناء الهدف من جديد
+        const parts2 = (maghribTimeStr || "").split(":");
+        if(parts2.length >= 2){
+          const hh = Number(parts2[0]), mm = Number(parts2[1]);
+          target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0);
+          if(target <= now) target.setDate(target.getDate()+1);
+        }else{
+          target.setDate(target.getDate()+1);
+        }
       }
 
       const diff = target - now;
+      if(diff <= 0){
+        $("iftar-countdown").textContent = "00:00:00";
+        return;
+      }
 
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const hours   = Math.floor(diff/(1000*60*60));
+      const minutes = Math.floor((diff%(1000*60*60))/(1000*60));
+      const seconds = Math.floor((diff%(1000*60))/1000);
 
-      document.getElementById("iftar-countdown").textContent =
+      $("iftar-countdown").textContent =
         pad2(hours) + ":" + pad2(minutes) + ":" + pad2(seconds);
 
     }, 1000);
   }
 
-  document.getElementById("refresh-btn").addEventListener("click", loadTimings);
+  // زر التحديث
+  $("refresh-btn").addEventListener("click", loadTimings);
 
-  // تشغيل تلقائي عند فتح الصفحة
+  // تحميل أول مرة
   loadTimings();
 </script>
 
