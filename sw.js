@@ -1,4 +1,4 @@
-const CACHE_NAME = "ramadan-pwa-v1";
+const CACHE_NAME = "ramadan-pwa-v2";
 
 const ASSETS = [
   "./",
