@@ -228,7 +228,7 @@
       <div class="glass-card p-6">
         <label class="block text-slate-300 mb-3 text-sm">أدخل اسمك لتجهيز البطاقة:</label>
         <input type="text" id="sender-name"
-          placeholder="مثال: عائلة محمد"
+          placeholder="مثال حسن علي"
           class="w-full bg-slate-950/40 border border-slate-700 rounded-xl p-4 text-white mb-4 outline-none focus:ring-2 focus:ring-yellow-500 transition-all" />
 
         <div id="greeting-box"
@@ -537,10 +537,68 @@
     $("download-btn").addEventListener("click", downloadCard);
 
     function init(){
-      updateTodayChip();
+      updateTodayChip();}
 function updateLiveClock() {
   const now = new Date();
 
+  const time = now.toLocaleTimeString("ar-SD", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  const date = now.toLocaleDateString("ar-SD", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const hijri = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+  const clockEl = document.getElementById("live-clock");
+  const dateEl = document.getElementById("live-date");
+  const hijriEl = document.getElementById("hijri-date");
+
+  if (clockEl) clockEl.textContent = time;
+  if (dateEl) dateEl.textContent = date;
+  if (hijriEl) hijriEl.textContent = hijri + " هـ";
+}
+
+function updateLiveClock() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString("ar-SD", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+
+    const gregorianDate = now.toLocaleDateString("ar-SD");
+
+    const hijriDate = now.toLocaleDateString("ar-SA-u-ca-islamic", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
+    const clockEl = document.getElementById("live-clock");
+    const dateEl = document.getElementById("live-date");
+    const hijriEl = document.getElementById("hijri-date");
+
+    if (clockEl) clockEl.textContent = time;
+    if (dateEl) dateEl.textContent = gregorianDate;
+    if (hijriEl) hijriEl.textContent = hijriDate + " هـ";
+}
+
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
   const time = now.toLocaleTimeString("ar-SD", {
     hour: "2-digit",
     minute: "2-digit",
