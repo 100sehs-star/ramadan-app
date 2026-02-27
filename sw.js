@@ -17,7 +17,14 @@ self.addEventListener("install", (event) => {
   );
   self.skipWaiting();
 });
-
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
+    )
+  );
+  self.clients.claim();
+});
 // 2) Activate: احذف أي كاش قديم فوراً
 self.addEventListener("activate", (event) => {
   event.waitUntil(
