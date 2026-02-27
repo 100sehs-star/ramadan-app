@@ -152,7 +152,55 @@
         ملاحظة: السحور هنا محسوب كـ (الفجر - 20 دقيقة) بشكل تقريبي.
       </div>
     </section>
+<!-- صفحة التهنئة -->
+<section id="page-greet" class="mt-6 p-5 rounded-3xl glass hidden">
+  <h2 class="text-xl font-extrabold text-amber-400 mb-3">تهنئة رمضان</h2>
+  <p class="text-slate-200 leading-relaxed">
+    رمضان كريم 🌙✨<br>
+    جعله الله شهر خير وبركة عليكم وعلى أحبابكم.
+  </p>
 
+  <div class="mt-4">
+    <textarea id="greet-text"
+      class="w-full min-h-[120px] px-4 py-3 rounded-2xl bg-slate-900/40 border border-white/10 text-slate-100 outline-none"
+      placeholder="اكتب تهنئتك هنا..."></textarea>
+
+    <button id="copy-greet"
+      class="w-full mt-3 py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold">
+      نسخ التهنئة
+    </button>
+
+    <div id="copy-done" class="mt-2 text-sm text-emerald-300 hidden">✅ تم النسخ</div>
+  </div>
+</section>
+
+<!-- صفحة المسبحة -->
+<section id="page-tasbih" class="mt-6 p-5 rounded-3xl glass hidden">
+  <h2 class="text-xl font-extrabold text-amber-400 mb-3">المسبحة</h2>
+
+  <div class="text-center">
+    <div id="tasbih-count" class="text-6xl font-extrabold text-amber-400">0</div>
+    <div class="text-slate-300 mt-2">اضغط للتسبيح</div>
+
+    <button id="tasbih-add"
+      class="w-full mt-5 py-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-extrabold">
+      سبحان الله
+    </button>
+
+    <div class="flex gap-3 mt-3">
+      <button id="tasbih-reset"
+        class="flex-1 py-3 rounded-2xl glass border border-white/10 text-slate-100 font-bold">
+        تصفير
+      </button>
+      <button id="tasbih-save"
+        class="flex-1 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">
+        حفظ
+      </button>
+    </div>
+
+    <div id="tasbih-saved" class="mt-2 text-sm text-emerald-300 hidden">✅ تم الحفظ</div>
+  </div>
+</section>
   </main>
 
 <script>
@@ -345,9 +393,78 @@
     }, 1000);
   }
   startIftarCountdown();
+// ------------------- التبويبات -------------------
 
+var tabHome = document.getElementById("tab-home");
+var tabMas  = document.getElementById("tab-mas");
+var tabDoc  = document.getElementById("tab-doc");
+
+var homeSection = document.querySelector("section"); // أول section هو الرئيسية
+var tasbihSection = document.getElementById("page-tasbih");
+var greetSection = document.getElementById("page-greet");
+
+function showHome(){
+  homeSection.classList.remove("hidden");
+  tasbihSection.classList.add("hidden");
+  if(greetSection) greetSection.classList.add("hidden");
+}
+
+function showTasbih(){
+  homeSection.classList.add("hidden");
+  tasbihSection.classList.remove("hidden");
+  if(greetSection) greetSection.classList.add("hidden");
+}
+
+function showGreet(){
+  homeSection.classList.add("hidden");
+  tasbihSection.classList.add("hidden");
+  if(greetSection) greetSection.classList.remove("hidden");
+}
+
+tabHome.addEventListener("click", showHome);
+tabMas.addEventListener("click", showTasbih);
+tabDoc.addEventListener("click", showGreet);
+
+
+// ------------------- المسبحة -------------------
+
+var tasbihCount = 0;
+var tasbihDisplay = document.getElementById("tasbih-count");
+var tasbihBtn = document.getElementById("tasbih-add");
+
+if(tasbihBtn){
+  tasbihBtn.addEventListener("click", function(){
+    tasbihCount++;
+    tasbihDisplay.textContent = tasbihCount;
+  });
+}
   // ---------- تشغيل أولي ----------
   fetchTimingsForToday();
+// ---------------- التبويبات ----------------
+var tabHome = document.getElementById("tab-home");
+var tabMas  = document.getElementById("tab-mas");
+var tabDoc  = document.getElementById("tab-doc");
+
+var pageHome   = document.querySelector("main > section");
+var pageTasbih = document.getElementById("page-tasbih");
+
+function showHome(){
+  if(pageHome) pageHome.classList.remove("hidden");
+  if(pageTasbih) pageTasbih.classList.add("hidden");
+}
+
+function showTasbih(){
+  if(pageHome) pageHome.classList.add("hidden");
+  if(pageTasbih) pageTasbih.classList.remove("hidden");
+}
+
+if(tabHome){
+  tabHome.addEventListener("click", showHome);
+}
+
+if(tabMas){
+  tabMas.addEventListener("click", showTasbih);
+}
 </script>
 
 </body>
